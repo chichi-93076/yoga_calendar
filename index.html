@@ -10,28 +10,31 @@
     <style>
         /* CSS 樣式維持不變，保持原本的美觀設計 */
         body { font-family: "Noto Sans TC", sans-serif; background-color: #fff1f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .calendar-container { width: 800px; background-color: #ffffff; border: 3px solid #ff9eb5; padding: 22px; border-radius: 22px; box-shadow: 6px 6px 0px #ff9eb5; }
+        .calendar-container { width: 900px; background-color: #ffffff; border: 3px solid #ff9eb5; padding: 22px; border-radius: 22px; box-shadow: 6px 6px 0px #ff9eb5; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
         .month-year { font-size: 32px; font-weight: bold; color: #ff7aa2; }
+        .nav-buttons { display: flex; gap: 10px; }
+        .nav-btn { padding: 8px 16px; font-size: 14px; background-color: #ff7aa2; color: #fff; border: none; border-radius: 999px; cursor: pointer; box-shadow: 2px 2px 0 #ffb3c8; }
+        .nav-btn:hover { background-color: #ff5c8a; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-radius: 18px; overflow: hidden; border: 2px solid #ffd0dc; }
         .day-header { background-color: #ffe4ec; text-align: center; padding: 10px 0; font-weight: bold; color: #ff5c8a; font-size: 14px; border-bottom: 2px solid #ffd0dc; }
-        .day-cell { padding: 10px; min-height: 80px; position: relative; background-color: #ffffff; border-right: 1px dashed #ffd0dc; border-bottom: 1px dashed #ffd0dc; }
+        .day-cell { padding: 10px; min-height: 80px; position: relative; background-color: #ffffff; border-right: 1px dashed #ffd0dc; border-bottom: 1px dashed #ffd0dc; overflow: hidden; }
         .day-cell:nth-child(7n) { border-right: none; }
-        .day-number { font-size: 18px; font-weight: bold; color: #ff5c8a; background-color: #ffe4ec; display: inline-block; padding: 4px 10px; border-radius: 999px; margin-bottom: 6px; }
+        .day-number { font-size: 18px; font-weight: bold; color: #1d0c50; display: inline-block; padding: 4px 10px; border-radius: 999px; margin-bottom: 6px; }
         
         /* 課程樣式 */
-        .event { background-color: #ffd6e3; padding: 8px 10px; margin-top: 6px; border-radius: 14px; font-size: 12px; color: #8a2c4a; box-shadow: 3px 3px 0px #ffb3c8; line-height: 1.5; }
+        .event { background-color: #ffd6e3; padding: 8px 10px; margin-top: 6px; border-radius: 14px; font-size: 12px; color: #8a2c4a; box-shadow: 3px 3px 0px #ffb3c8; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .day-cell:has(.event) { background-image: radial-gradient(#ffe4ec 1px, transparent 1px); background-size: 14px 14px; }
         
         /* Google 按鈕 */
-        .add-calendar { display: inline-block; margin-top: 6px; padding: 4px 10px; font-size: 12px; background-color: #ff7aa2; color: #fff; border-radius: 999px; text-decoration: none; box-shadow: 2px 2px 0 #ffb3c8; cursor: pointer; }
-        .add-calendar:hover { background-color: #ff5c8a; }
+        .add-calendar { display: inline-flex; align-items: center; justify-content: center; margin-top: 6px; width: 24px; height: 24px; padding: 0; font-size: 14px; color: #ff7aa2; border: none; border-radius: 50%; text-decoration: none; box-shadow: none; cursor: pointer; line-height: 1; }
+        .add-calendar:hover { color: #ff5c8a; }
 
         /* 手機版 RWD */
         @media (max-width: 768px) {
             .calendar-grid { grid-template-columns: 1fr; display: flex; flex-direction: column; gap: 14px; border: none; }
             .day-header { display: none; }
-            .day-cell:not(.has-event) { display: none; } /* 用 JS 加 class 來判斷 */
+            .day-cell:not(.has-event) { display: none; }
             .day-cell { display: block; border: 2px solid #ffd0dc; border-radius: 18px; padding: 14px 16px; box-shadow: 4px 4px 0 #ffb3c8; }
             .day-cell::before { content: attr(data-day); display: block; font-size: 14px; font-weight: bold; color: #ff7aa2; margin-bottom: 4px; }
         }
@@ -41,103 +44,125 @@
 
     <div class="calendar-container">
         <div class="header">
-            <div class="month-year" id="calendar-title">2026 年 1 月份行事曆</div>
+            <button class="nav-btn" id="prev-month">◀ 上一月</button>
+            <div class="month-year" id="calendar-title">教職員體適能瑜珈社 2026 年 2 月份行事曆</div>
+            <button class="nav-btn" id="next-month">下一月 ▶</button>
         </div>
         
         <div class="calendar-grid" id="calendar-grid"></div>
     </div>
 
     <script>
-        // ==========================================
-        // 🟢 設定區：請在這裡修改你的課程資料
-        // ==========================================
-        const config = {
-            title: "教職員體適能瑜珈社 2026 年 1 月份行事曆",
-            startDate: "2025-12-28", // 行事曆格子的第一天 (通常是上個月的月底)
-            totalDays: 35,             // 總共要畫幾格 (5週 x 7天 = 35)
-            defaultLocation: "育美館韻律教室"
-        };
-
-        const courseData = [
-            { date: "2025-12-29", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2025-12-31", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-01-05", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-01-08", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-01-12", start: "16:40", end: "17:30", name: "教職員體適能瑜珈社" },
-            { date: "2026-01-14", start: "16:40", end: "17:30", name: "教職員體適能瑜珈社" },
-            { date: "2026-01-19", start: "16:40", end: "17:30", name: "教職員體適能瑜珈社" }
+        const courseData = [           
+            { date: "2026-02-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-02-26", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-03-02", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-03-05", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-03-09", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-03-12", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-03-16", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-03-19", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-03-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-03-26", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-03-30", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-04-02", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-04-08", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-04-09", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-04-13", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-04-16", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-04-20", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-04-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-04-27", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-04-30", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-05-04", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-05-07", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-05-11", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-05-14", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-05-18", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-05-21", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-05-25", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-05-28", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-06-01", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-06-04", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-06-08", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-06-11", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-06-15", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-06-18", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-06-22", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
+            { date: "2026-06-25", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" }
         ];
-
-        // ==========================================
-        // 🔴 程式邏輯區 (底下不用動，它會自己運作)
-        // ==========================================
 
         const weekDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
         const gridContainer = document.getElementById('calendar-grid');
-        document.getElementById('calendar-title').textContent = config.title;
+        const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+        
+        let currentMonth = new Date(2026, 1); // 預設 2 月
 
-        // 1. 先產生標題列 (日~六)
-        weekDays.forEach(day => {
-            const header = document.createElement('div');
-            header.className = 'day-header';
-            header.textContent = day;
-            gridContainer.appendChild(header);
-        });
+        function renderCalendar() {
+            gridContainer.innerHTML = '';
 
-        // 2. 產生日期格子
-        let currentDate = new Date(config.startDate);
+            const year = currentMonth.getFullYear();
+            const month = currentMonth.getMonth();
 
-        for (let i = 0; i < config.totalDays; i++) {
-            // 格式化日期字串 YYYY-MM-DD 用來比對 JSON
-            const year = currentDate.getFullYear();
-            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-            const day = String(currentDate.getDate()).padStart(2, '0');
-            const dateStr = `${year}-${month}-${day}`;
-            const dayOfWeek = weekDays[currentDate.getDay()];
+            // 更新標題
+            document.getElementById('calendar-title').textContent = `教職員體適能瑜珈社 ${year} 年 ${monthNames[month]}份行事曆`;
 
-            // 建立格子 HTML 結構
-            const cell = document.createElement('div');
-            cell.className = 'day-cell';
-            cell.setAttribute('data-day', dayOfWeek); // 給手機版顯示用
+            // 產生標題列
+            weekDays.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                header.textContent = day;
+                gridContainer.appendChild(header);
+            });
 
-            // 顯示日期數字
-            const numDiv = document.createElement('div');
-            numDiv.className = 'day-number';
-            numDiv.textContent = currentDate.getDate();
-            cell.appendChild(numDiv);
+            // 計算起始日期（該月第一天的星期幾）
+            const firstDay = new Date(year, month, 1);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
 
-            // 檢查這一天有沒有課
-            const event = courseData.find(c => c.date === dateStr);
+            let currentDate = new Date(startDate);
+            const totalDays = 35;
 
-            if (event) {
-                cell.classList.add('has-event'); // 標記有課，給手機版判斷顯示
+            for (let i = 0; i < totalDays; i++) {
+                const dateYear = currentDate.getFullYear();
+                const dateMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const dateDay = String(currentDate.getDate()).padStart(2, '0');
+                const dateStr = `${dateYear}-${dateMonth}-${dateDay}`;
+                const dayOfWeek = weekDays[currentDate.getDay()];
 
-                // 產生 Google Calendar 連結
-                const gLink = document.createElement('a');
-                gLink.className = 'add-calendar';
-                gLink.target = '_blank';
-                gLink.textContent = '➕';
-                gLink.href = generateGoogleLink(event, config.defaultLocation);
-                cell.appendChild(gLink);
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                cell.setAttribute('data-day', dayOfWeek);
 
-                // 產生課程資訊卡片
-                const eventInfo = document.createElement('div');
-                eventInfo.className = 'event';
-                eventInfo.innerHTML = `${event.start}–${event.end}<br>${config.defaultLocation}`;
-                cell.appendChild(eventInfo);
+                const numDiv = document.createElement('div');
+                numDiv.className = 'day-number';
+                numDiv.textContent = currentDate.getDate();
+                cell.appendChild(numDiv);
+
+                const event = courseData.find(c => c.date === dateStr);
+
+                if (event) {
+                    cell.classList.add('has-event');
+
+                    const gLink = document.createElement('a');
+                    gLink.className = 'add-calendar';
+                    gLink.target = '_blank';
+                    gLink.textContent = '➕';
+                    gLink.href = generateGoogleLink(event, '育美館韻律教室');
+                    cell.appendChild(gLink);
+
+                    const eventInfo = document.createElement('div');
+                    eventInfo.className = 'event';
+                    eventInfo.innerHTML = `${event.start}–${event.end}<br>育美館韻律教室`;
+                    cell.appendChild(eventInfo);
+                }
+
+                gridContainer.appendChild(cell);
+                currentDate.setDate(currentDate.getDate() + 1);
             }
-
-            gridContainer.appendChild(cell);
-
-            // 日期 +1
-            currentDate.setDate(currentDate.getDate() + 1);
         }
 
-        // 輔助功能：產生 Google Calendar 網址
         function generateGoogleLink(event, location) {
-            // 簡單的時間轉換：台灣時間 (UTC+8) 轉 UTC (減8小時)
-            // 格式需求: YYYYMMDDTHHmmSSZ
-            
             function toTC(dateStr, timeStr) {
                 const dt = new Date(`${dateStr}T${timeStr}:00+08:00`); 
                 return dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
@@ -153,6 +178,20 @@
             
             return baseUrl + text + dates + loc;
         }
+
+        // 按鈕事件
+        document.getElementById('prev-month').addEventListener('click', () => {
+            currentMonth.setMonth(currentMonth.getMonth() - 1);
+            renderCalendar();
+        });
+
+        document.getElementById('next-month').addEventListener('click', () => {
+            currentMonth.setMonth(currentMonth.getMonth() + 1);
+            renderCalendar();
+        });
+
+        // 初始化
+        renderCalendar();
     </script>
 </body>
 </html>
