@@ -3,42 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" type="image/png" href="./yoga_icon_s.png">
-    <link rel="apple-touch-icon" href="./yoga_icon_s.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./yoga_icon_s.png">
-    <title>教職員體適能瑜珈社行事曆</title>
+    <link rel="icon" type="image/png" href="./yoga_icon_20260209.png"> 
+    <title>教職員體適能瑜珈社行事曆 - 洛伊德可愛風</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Varela+Round&display=swap" rel="stylesheet">
     <style>
-        /* CSS 樣式維持不變，保持原本的美觀設計 */
-        body { font-family: "Noto Sans TC", sans-serif; background-color: #fff1f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .calendar-container { width: 900px; background-color: #ffffff; border: 3px solid #ff9eb5; padding: 22px; border-radius: 22px; box-shadow: 6px 6px 0px #ff9eb5; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
-        .month-year { font-size: 32px; font-weight: bold; color: #ff7aa2; }
-        .nav-buttons { display: flex; gap: 10px; }
-        .nav-btn { padding: 8px 16px; font-size: 14px; background-color: #ff7aa2; color: #fff; border: none; border-radius: 999px; cursor: pointer; box-shadow: 2px 2px 0 #ffb3c8; }
-        .nav-btn:hover { background-color: #ff5c8a; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-radius: 18px; overflow: hidden; border: 2px solid #ffd0dc; }
-        .day-header { background-color: #ffe4ec; text-align: center; padding: 10px 0; font-weight: bold; color: #ff5c8a; font-size: 14px; border-bottom: 2px solid #ffd0dc; }
-        .day-cell { padding: 10px; min-height: 80px; position: relative; background-color: #ffffff; border-right: 1px dashed #ffd0dc; border-bottom: 1px dashed #ffd0dc; overflow: hidden; }
-        .day-cell:nth-child(7n) { border-right: none; }
-        .day-number { font-size: 18px; font-weight: bold; color: #1d0c50; display: inline-block; padding: 4px 10px; border-radius: 999px; margin-bottom: 6px; }
-        
-        /* 課程樣式 */
-        .event { background-color: #ffd6e3; padding: 8px 10px; margin-top: 6px; border-radius: 14px; font-size: 12px; color: #8a2c4a; box-shadow: 3px 3px 0px #ffb3c8; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .day-cell:has(.event) { background-image: radial-gradient(#ffe4ec 1px, transparent 1px); background-size: 14px 14px; }
-        
-        /* Google 按鈕 */
-        .add-calendar { display: inline-flex; align-items: center; justify-content: center; margin-top: 6px; width: 24px; height: 24px; padding: 0; font-size: 14px; color: #ff7aa2; border: none; border-radius: 50%; text-decoration: none; box-shadow: none; cursor: pointer; line-height: 1; }
-        .add-calendar:hover { color: #ff5c8a; }
+        /* 🖤 洛伊德（黃昏）配色變數 */
+        :root {
+            --loid-gold: #D7C68A;           /* 金髮 - 強調色、Google按鈕背景 */
+            --loid-gold-shadow: #B8A86F;    /* 深金陰影 - 按鈕邊框陰影 */
+            --loid-suit: #44514D;           /* 西裝深綠灰 - 主要文字、外框 */
+            --loid-shirt: #f1e4b5;          /* 襯衫白 - 行事曆卡片背景 */
+            --loid-tie: #4C8C95;            /* 藍綠領帶 - 表頭背景、主要按鈕 */
+            --loid-tie-light:#E6F2F4;      /* 藍綠領帶極淺色 - 課程區塊背景、網頁大背景 */
+            --loid-body:#8FA391;   /*  網頁大背景 */
+        }
 
-        /* 手機版 RWD */
+        body { 
+            /* 結合圓潤英文字體與思源黑體 */
+            font-family: "Varela Round", "Noto Sans TC", sans-serif;
+            background-color: var(--loid-body); /* 網頁背景使用極淺藍綠，柔和舒適 */
+/*  修改開始：背景直條紋設定
+            background-color: var(--loid-body); 
+            background-image: linear-gradient(
+                90deg, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.2) 50%
+            );
+            background-size: 50px 100%; 
+    修改結束  */            
+            display: flex; 
+            justify-content: center; 
+            padding: 30px 20px; 
+            margin: 0; 
+            color: var(--loid-suit);
+        }
+
+        .calendar-container { 
+            width: 900px; 
+            background-color: var(--loid-shirt); /* 襯衫白背景 */
+            /* 可愛風核心：超大圓角與柔和陰影 */
+            border-radius: 24px; 
+            border: 3px solid var(--loid-suit);
+            padding: 25px; 
+            box-shadow: 0 10px 25px rgba(68, 81, 77, 0.15); /* 柔和的西裝色暈影 */
+        }
+
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 25px; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+        }
+
+        .month-year { 
+            font-size: 28px; 
+            font-weight: 900; 
+            color: var(--loid-suit);
+            /* 加入一點可愛的文字描邊感 */
+            text-shadow: 1px 1px 0px #fff, 2px 2px 0px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn { 
+            padding: 10px 24px; 
+            font-size: 16px; 
+            font-weight: bold;
+            font-family: inherit;
+            /* 使用藍綠領帶色作為主按鈕 */
+            background-color: var(--loid-tie); 
+            color: #fff; 
+            border: none;
+            border-radius: 50px; /* 膠囊狀按鈕 */
+            cursor: pointer; 
+            /* Q彈立體感陰影 */
+            box-shadow: 0 4px 0 #3A6B72; /* 比領帶色深一點 */
+            transition: all 0.1s ease-in-out;
+        }
+
+        .nav-btn:hover { 
+            background-color: #5DA3AD; /* 稍微變亮 */
+            transform: translateY(2px); /* 按壓效果 */
+            box-shadow: 0 2px 0 #3A6B72;
+        }
+        
+        .nav-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .calendar-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            border-radius: 16px; /* 整個表格大圓角 */
+            overflow: hidden; 
+            border: 2px solid var(--loid-suit);
+            background-color: #fff;
+        }
+
+        .day-header { 
+            background-color: var(--loid-tie); /* 藍綠領帶色表頭 */
+            text-align: center; 
+            padding: 14px 0; 
+            font-weight: bold; 
+            color: #ffffff; 
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        .day-cell { 
+            padding: 10px; 
+            min-height: 100px; 
+            background-color: #ffffff; 
+            border-right: 1px dashed rgba(68, 81, 77, 0.2); /* 使用虛線分隔，更輕盈 */
+            border-bottom: 1px dashed rgba(68, 81, 77, 0.2);
+        }
+
+        .day-cell:nth-child(7n) { border-right: none; }
+
+        .day-number { 
+            font-size: 16px; 
+            font-weight: 800; 
+            color: var(--loid-suit); 
+            /* 改為可愛的圓形數字標籤 */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background-color: var(--loid-tie-light);
+            border-radius: 50%;
+            margin-bottom: 6px; 
+        }
+        
+        /* 課程樣式 - 可愛貼紙風格 */
+        .event { 
+            /* 使用極淺藍綠色底 */
+            background-color: var(--loid-tie-light);
+            /* 使用藍綠領帶色虛線邊框，像縫線一樣 */
+            border: 2px dashed var(--loid-tie);
+            padding: 8px 10px; 
+            margin-top: 6px; 
+            /* 圓潤的貼紙形狀 */
+            border-radius: 12px; 
+            font-size: 13px; 
+            font-weight: 700;
+            color: var(--loid-suit); 
+            line-height: 1.5; 
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05); /* 輕微浮起感 */
+            transition: transform 0.2s;
+        }
+        
+        .event:hover {
+            transform: scale(1.02) rotate(-1deg); /* 滑鼠移上去稍微放大歪斜，增加俏皮感 */
+        }
+
+        /* Google 按鈕 - 使用亮眼的金髮色 */
+        .add-calendar { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-left: 5px;
+            width: 22px; 
+            height: 22px; 
+            padding: 0; 
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--loid-suit); /* 文字用深色對比 */
+            background-color: var(--loid-gold); /* 金髮色背景 */
+            border: 2px solid var(--loid-gold-shadow); /* 深金邊框 */
+            border-radius: 50%; /* 圓形 */
+            text-decoration: none; 
+            cursor: pointer; 
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+            vertical-align: middle;
+        }
+        .add-calendar:hover { 
+            background-color: #E6D599; 
+            transform: rotate(90deg); /* hover時旋轉，增加趣味性 */
+        }
+
+        /* 手機版 RWD - 保持卡片可愛風格 */
         @media (max-width: 768px) {
-            .calendar-grid { grid-template-columns: 1fr; display: flex; flex-direction: column; gap: 14px; border: none; }
+            .calendar-container { padding: 15px; border-radius: 16px;}
+            .month-year { font-size: 22px; text-align: center; }
+            .header { justify-content: center; }
+            .nav-btn { padding: 8px 16px; font-size: 14px; }
+            
+            .calendar-grid { grid-template-columns: 1fr; display: flex; flex-direction: column; gap: 15px; border: none; background: transparent; }
             .day-header { display: none; }
             .day-cell:not(.has-event) { display: none; }
-            .day-cell { display: block; border: 2px solid #ffd0dc; border-radius: 18px; padding: 14px 16px; box-shadow: 4px 4px 0 #ffb3c8; }
-            .day-cell::before { content: attr(data-day); display: block; font-size: 16px; font-weight: bold; color: #ff7aa2; margin-bottom: 8px; }
-            .day-number { font-size: 20px; }
-            .event { font-size: 20px; }
+            
+            /* 手機版單日卡片 */
+            .day-cell { 
+                display: block; 
+                border: 3px solid var(--loid-suit); 
+                border-radius: 16px; 
+                padding: 15px; 
+                box-shadow: 4px 4px 0 rgba(68, 81, 77, 0.1); 
+                background-color: #fff;
+            }
+            .day-cell::before { 
+                content: attr(data-day); 
+                display: block; 
+                font-size: 16px; 
+                font-weight: bold; 
+                color: var(--loid-tie); 
+                margin-bottom: 5px; 
+            }
+            .day-number { 
+                font-size: 20px; 
+                width: auto; height: auto; background: none; border-radius: 0;
+                margin-bottom: 10px;
+                display: block;
+            }
+            .event { font-size: 15px; padding: 12px; border-width: 3px; }
             .add-calendar { width: 28px; height: 28px; font-size: 16px; }
         }
     </style>
@@ -56,6 +236,7 @@
     </div>
 
     <script>
+        // 您的課程資料 (資料保持不變)
         const courseData = [           
             { date: "2026-02-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
             { date: "2026-02-26", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
@@ -99,7 +280,7 @@
         const gridContainer = document.getElementById('calendar-grid');
         const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
         
-        let currentMonth = new Date(2026, 1); // 預設 2 月
+        let currentMonth = new Date(2026, 1); // 預設 2026 年 2 月
 
         function renderCalendar() {
             gridContainer.innerHTML = '';
@@ -118,13 +299,13 @@
                 gridContainer.appendChild(header);
             });
 
-            // 計算起始日期（該月第一天的星期幾）
+            // 計算起始日期
             const firstDay = new Date(year, month, 1);
             const startDate = new Date(firstDay);
             startDate.setDate(startDate.getDate() - firstDay.getDay());
 
             let currentDate = new Date(startDate);
-            const totalDays = 35;
+            const totalDays = 35; // 顯示 5 週
 
             for (let i = 0; i < totalDays; i++) {
                 const dateYear = currentDate.getFullYear();
@@ -147,15 +328,17 @@
                 if (event) {
                     cell.classList.add('has-event');
 
+                    // Google 按鈕移到這裡，讓它跟在日期後面
                     const gLink = document.createElement('a');
                     gLink.className = 'add-calendar';
                     gLink.target = '_blank';
-                    gLink.textContent = '➕';
+                    gLink.textContent = '＋'; 
                     gLink.href = generateGoogleLink(event, '育美館韻律教室');
-                    cell.appendChild(gLink);
+                    numDiv.appendChild(gLink); // 將按鈕加入到數字圓圈旁
 
                     const eventInfo = document.createElement('div');
                     eventInfo.className = 'event';
+                    // 這裡移除按鈕，只保留文字
                     eventInfo.innerHTML = `${event.start}–${event.end}<br>育美館韻律教室`;
                     cell.appendChild(eventInfo);
                 }
