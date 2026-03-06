@@ -160,6 +160,10 @@
             transform: scale(1.02) rotate(-1deg); /* 滑鼠移上去稍微放大歪斜，增加俏皮感 */
         }
 
+        .event-red {
+            color: red;
+        }
+
         /* Google 按鈕 - 使用亮眼的金髮色 */
         .add-calendar { 
             display: inline-flex; 
@@ -230,7 +234,7 @@
     <div class="calendar-container">
         <div class="header">
             <button class="nav-btn" id="prev-month">◀ 上一月</button>
-            <div class="month-year" id="calendar-title">教職員體適能瑜珈社 2026 年 2 月份行事曆</div>
+            <div class="month-year" id="calendar-title">教職員體適能瑜珈社 2026 年 3 月份行事曆</div>
             <button class="nav-btn" id="next-month">下一月 ▶</button>
         </div>
         
@@ -240,56 +244,60 @@
     <script>
         // 您的課程資料 (資料保持不變)
         const courseData = [           
-            { date: "2026-02-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-02-26", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-03-02", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-03-05", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-03-09", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-03-12", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-03-16", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-03-19", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-03-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-03-26", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-03-30", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-04-02", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-04-08", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-04-09", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-04-13", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-04-16", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-04-20", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-04-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-04-27", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-04-30", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-05-04", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-05-07", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-05-11", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-05-14", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-05-18", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-05-21", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-05-25", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-05-28", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-06-01", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-06-04", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-06-08", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-06-11", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-06-15", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-06-18", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-06-22", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" },
-            { date: "2026-06-25", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社" }
+            { date: "2026-02-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-02-26", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-03-02", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-03-05", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-03-09", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-03-12", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-03-16", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-03-19", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-03-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-03-26", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-03-30", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-04-02", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-04-06", start: "17:15", end: "18:05", name: "瑜珈課清明節補假", location: "清明節補假" },
+            { date: "2026-04-08", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-04-09", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-04-13", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-04-16", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-04-20", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-04-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-04-27", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-04-30", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-05-04", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-05-07", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-05-11", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-05-14", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-05-18", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-05-21", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-05-25", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-05-28", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-06-01", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-06-04", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-06-08", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-06-11", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-06-15", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-06-18", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-06-22", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
+            { date: "2026-06-25", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" }
         ];
 
         const weekDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
         const gridContainer = document.getElementById('calendar-grid');
         const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
         
-        let currentMonth = new Date(2026, 1); // 預設 2026 年 2 月
-
+        const today = new Date();
+        const year = today.getFullYear();      // 2026
+        const month = today.getMonth();         // 2 (0-11，所以 3 月是 2)
+        let currentMonth = new Date(year, month); // 預設 2026 年 3 月
+        console.log(currentMonth);
         function renderCalendar() {
             gridContainer.innerHTML = '';
 
             const year = currentMonth.getFullYear();
             const month = currentMonth.getMonth();
-
+            //console.log(year, month);
             // 更新標題
             document.getElementById('calendar-title').textContent = `教職員體適能瑜珈社 ${year} 年 ${monthNames[month]}份行事曆`;
 
@@ -335,13 +343,16 @@
                     gLink.className = 'add-calendar';
                     gLink.target = '_blank';
                     gLink.textContent = '＋'; 
-                    gLink.href = generateGoogleLink(event, '育美館韻律教室');
+                    gLink.href = generateGoogleLink(event, event.location);
                     numDiv.appendChild(gLink); // 將按鈕加入到數字圓圈旁
 
                     const eventInfo = document.createElement('div');
                     eventInfo.className = 'event';
+                    if (event.location !== "育美館韻律教室") {
+                        eventInfo.classList.add('event-red');
+                    }
                     // 這裡移除按鈕，只保留文字
-                    eventInfo.innerHTML = `${event.start}–${event.end}<br>育美館韻律教室`;
+                    eventInfo.innerHTML = `${event.start}–${event.end}<br>${event.location}`;
                     cell.appendChild(eventInfo);
                 }
 
