@@ -1,396 +1,193 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-    <link rel="icon" type="image/png" href="./yoga_icon_20260209.png">
-    <link rel="apple-touch-icon" href="./yoga_icon_20260209.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./yoga_icon_20260209.png">
-    <title>教職員體適能瑜珈社行事曆 - 洛伊德可愛風</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Varela+Round&display=swap" rel="stylesheet">
-    <style>
-        /* 🖤 洛伊德（黃昏）配色變數 */
-        :root {
-            --loid-gold: #D7C68A;           /* 金髮 - 強調色、Google按鈕背景 */
-            --loid-gold-shadow: #B8A86F;    /* 深金陰影 - 按鈕邊框陰影 */
-            --loid-suit: #44514D;           /* 西裝深綠灰 - 主要文字、外框 */
-            --loid-shirt: #f1e4b5;          /* 襯衫白 - 行事曆卡片背景 */
-            --loid-tie: #4C8C95;            /* 藍綠領帶 - 表頭背景、主要按鈕 */
-            --loid-tie-light:#E6F2F4;      /* 藍綠領帶極淺色 - 課程區塊背景、網頁大背景 */
-            --loid-body:#8FA391;   /*  網頁大背景 */
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>教職員體適能瑜珈社 - 課程行事曆</title>
+   <link rel="icon" type="image/png" href="./yoga_icon_20260209.png">
+   <link rel="apple-touch-icon" href="./yoga_icon_20260209.png">
+   <link rel="apple-touch-icon" sizes="180x180" href="./yoga_icon_20260209.png">
+  <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
-        body { 
-            /* 結合圓潤英文字體與思源黑體 */
-            font-family: "Varela Round", "Noto Sans TC", sans-serif;
-            background-color: var(--loid-body); /* 網頁背景使用極淺藍綠，柔和舒適 */
-/*  修改開始：背景直條紋設定
-            background-color: var(--loid-body); 
-            background-image: linear-gradient(
-                90deg, 
-                transparent 50%, 
-                rgba(255, 255, 255, 0.2) 50%
-            );
-            background-size: 50px 100%; 
-    修改結束  */            
-            display: flex; 
-            justify-content: center; 
-            padding: 30px 20px; 
-            margin: 0; 
-            color: var(--loid-suit);
-        }
+  <style>
+    /* 基本版面與卡片設定 */
+    body { font-family: 'Klee One', cursive; background-color: #FCF9F2; color: #333; padding: 20px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 900px; text-align: center; } 
+    .card { background: #FFF; border: 2px dashed #D7C68A; border-radius: 15px; padding: 30px; margin-bottom: 20px; }
+    
+    /* 表單與按鈕元件 */
+    input, select { width: 90%; padding: 10px; margin: 10px 0; border: 1px dashed #CCC; border-radius: 8px; font-family: 'Klee One', cursive; font-size: 16px; }
+    button { background-color: #F9E4D4; border: none; padding: 10px 25px; border-radius: 20px; font-size: 16px; font-family: 'Klee One', cursive; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+    button:hover { background-color: #F2D2BC; }    
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border-bottom: 1px dashed #D7C68A; padding: 10px; text-align: left; }
+    .loader { font-size: 14px; color: #888; margin-top: 10px; }
+    
+    /* 詳情與狀態標籤 */
+    .detail-box { background-color: #FDFBF7; border: 1px solid #B8A86F; border-radius: 8px; padding: 15px; margin: 10px auto; text-align: left; font-size: 15px; width: 85%; box-shadow: 2px 2px 8px rgba(0,0,0,0.05); }
+    .detail-box p { margin: 8px 0; color: #555; }
+    .detail-box strong { color: #4A4A4A; }
+    .btn-cancel { background-color: #F5F5F5; color: #666; padding: 5px 12px; border-radius: 12px; font-size: 13px; border: 1px solid #CCC; margin-top: 0; }
+    .btn-cancel:hover { background-color: #E0E0E0; }
+    .status-canceled { color: #B8A86F; font-size: 13px; font-weight: bold; }
 
-        .calendar-container { 
-            width: 900px; 
-            background-color: var(--loid-shirt); /* 襯衫白背景 */
-            /* 可愛風核心：超大圓角與柔和陰影 */
-            border-radius: 24px; 
-            border: 3px solid var(--loid-suit);
-            padding: 25px; 
-            box-shadow: 0 10px 25px rgba(68, 81, 77, 0.15); /* 柔和的西裝色暈影 */
-        }
+    /* 彈窗樣式 */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-box { background: #FFF; border: 2px dashed #B8A86F; border-radius: 15px; padding: 25px; text-align: center; max-width: 320px; width: 80%; box-shadow: 0px 4px 15px rgba(0,0,0,0.1); }
+    .modal-buttons { margin-top: 20px; display: flex; justify-content: space-around; gap: 10px; }
+    .btn-confirm { background-color: #F9E4D4; width: 100%; }
+    .btn-confirm:hover { background-color: #F2D2BC; }
+    .btn-close { background-color: #F5F5F5; color: #666; width: 100%; border: 1px solid #CCC; padding: 10px 25px; border-radius: 20px; font-size: 16px; font-family: 'Klee One', cursive; cursor: pointer; }
+    .hidden { display: none; }
 
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 25px; 
-            flex-wrap: wrap; 
-            gap: 15px; 
-        }
+    
+    /* ====== FullCalendar 行事曆專屬樣式 ====== */
+    .fc { font-family: 'Klee One', cursive; }
+    .fc .fc-toolbar-title { font-weight: 600; color: #333; }
+    .fc .fc-button-primary { background-color: #B8A86F; border: none; border-radius: 8px; }
+    .fc .fc-button-primary:hover, .fc .fc-button-primary:active { background-color: #D7C68A !important; }
+    
+    .fc-event {
+      border: none !important;
+      border-radius: 4px !important;
+      padding: 4px !important; /* 稍微增加內距讓文字更舒適 */
+      margin-bottom: 3px !important;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+    .fc-event-title {
+      color: #333 !important; 
+      font-weight: 600 !important;
+      font-size: 14px;
+    }
 
-        .month-year { 
-            font-size: 28px; 
-            font-weight: 900; 
-            color: var(--loid-suit);
-            /* 加入一點可愛的文字描邊感 */
-            text-shadow: 1px 1px 0px #fff, 2px 2px 0px rgba(0,0,0,0.1);
-        }
+    /* ====== 📱 RWD 手機版響應式設定 ====== */
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .card { padding: 15px; border-width: 1px; } /* 手機上卡片內距變小、邊框變細 */
+      
+      /* 將行事曆上方的按鈕與標題改為垂直置中排列，避免擠壓 */
+      .fc .fc-toolbar {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .fc .fc-toolbar-title { font-size: 1.2em; }
+      
+      /* 👑 關鍵：讓手機版上的長課程名稱可以自動換行，不會被切掉 */
+      .fc-event-title {
+        white-space: normal !important; 
+        font-size: 12px !important;
+        line-height: 1.3;
+      }
+      
+      /* 稍微縮小日期的數字大小 */
+      .fc-daygrid-day-number { font-size: 14px; }
 
-        .nav-btn { 
-            padding: 10px 24px; 
-            font-size: 16px; 
-            font-weight: bold;
-            font-family: inherit;
-            /* 使用藍綠領帶色作為主按鈕 */
-            background-color: var(--loid-tie); 
-            color: #fff; 
-            border: none;
-            border-radius: 50px; /* 膠囊狀按鈕 */
-            cursor: pointer; 
-            /* Q彈立體感陰影 */
-            box-shadow: 0 4px 0 #3A6B72; /* 比領帶色深一點 */
-            transition: all 0.1s ease-in-out;
-        }
+      /* ✨ 新增：強制拉高每一天格子的最小高度，讓整個月曆變長 */
+      .fc .fc-daygrid-day-frame {
+        min-height: 90px; /* 您可以隨時依據喜好調整數值，例如 100px 或 120px */
+      }
 
-        .nav-btn:hover { 
-            background-color: #5DA3AD; /* 稍微變亮 */
-            transform: translateY(2px); /* 按壓效果 */
-            box-shadow: 0 2px 0 #3A6B72;
-        }
-        
-        .nav-btn:active {
-            transform: translateY(4px);
-            box-shadow: none;
-        }
-
-        .calendar-grid { 
-            display: grid; 
-            grid-template-columns: repeat(7, 1fr); 
-            border-radius: 16px; /* 整個表格大圓角 */
-            overflow: hidden; 
-            border: 2px solid var(--loid-suit);
-            background-color: #fff;
-        }
-
-        .day-header { 
-            background-color: var(--loid-tie); /* 藍綠領帶色表頭 */
-            text-align: center; 
-            padding: 14px 0; 
-            font-weight: bold; 
-            color: #ffffff; 
-            font-size: 16px;
-            letter-spacing: 1px;
-        }
-
-        .day-cell { 
-            padding: 10px; 
-            min-height: 100px; 
-            background-color: #ffffff; 
-            border-right: 1px dashed rgba(68, 81, 77, 0.2); /* 使用虛線分隔，更輕盈 */
-            border-bottom: 1px dashed rgba(68, 81, 77, 0.2);
-        }
-
-        .day-cell:nth-child(7n) { border-right: none; }
-
-        .day-number { 
-            font-size: 16px; 
-            font-weight: 800; 
-            color: var(--loid-suit); 
-            /* 改為可愛的圓形數字標籤 */
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            background-color: var(--loid-tie-light);
-            border-radius: 50%;
-            margin-bottom: 6px; 
-        }
-        
-        /* 課程樣式 - 可愛貼紙風格 */
-        .event { 
-            /* 使用極淺藍綠色底 */
-            background-color: var(--loid-tie-light);
-            /* 使用藍綠領帶色虛線邊框，像縫線一樣 */
-            border: 2px dashed var(--loid-tie);
-            padding: 8px 10px; 
-            margin-top: 6px; 
-            /* 圓潤的貼紙形狀 */
-            border-radius: 12px; 
-            font-size: 13px; 
-            font-weight: 700;
-            color: var(--loid-suit); 
-            line-height: 1.5; 
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.05); /* 輕微浮起感 */
-            transition: transform 0.2s;
-        }
-        
-        .event:hover {
-            transform: scale(1.02) rotate(-1deg); /* 滑鼠移上去稍微放大歪斜，增加俏皮感 */
-        }
-
-        .event-red {
-            color: red;
-        }
-
-        /* Google 按鈕 - 使用亮眼的金髮色 */
-        .add-calendar { 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin-left: 5px;
-            width: 22px; 
-            height: 22px; 
-            padding: 0; 
-            font-size: 14px;
-            font-weight: 900;
-            color: var(--loid-suit); /* 文字用深色對比 */
-            background-color: var(--loid-gold); /* 金髮色背景 */
-            border: 2px solid var(--loid-gold-shadow); /* 深金邊框 */
-            border-radius: 50%; /* 圓形 */
-            text-decoration: none; 
-            cursor: pointer; 
-            box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-            transition: all 0.2s;
-            vertical-align: middle;
-        }
-        .add-calendar:hover { 
-            background-color: #E6D599; 
-            transform: rotate(90deg); /* hover時旋轉，增加趣味性 */
-        }
-
-        /* 手機版 RWD - 保持卡片可愛風格 */
-        @media (max-width: 768px) {
-            .calendar-container { padding: 15px; border-radius: 16px;}
-            .month-year { font-size: 22px; text-align: center; }
-            .header { justify-content: center; }
-            .nav-btn { padding: 8px 16px; font-size: 14px; }
-            
-            .calendar-grid { grid-template-columns: 1fr; display: flex; flex-direction: column; gap: 15px; border: none; background: transparent; }
-            .day-header { display: none; }
-            .day-cell:not(.has-event) { display: none; }
-            
-            /* 手機版單日卡片 */
-            .day-cell { 
-                display: block; 
-                border: 3px solid var(--loid-suit); 
-                border-radius: 16px; 
-                padding: 15px; 
-                box-shadow: 4px 4px 0 rgba(68, 81, 77, 0.1); 
-                background-color: #fff;
-            }
-            .day-cell::before { 
-                content: attr(data-day); 
-                display: block; 
-                font-size: 16px; 
-                font-weight: bold; 
-                color: var(--loid-tie); 
-                margin-bottom: 5px; 
-            }
-            .day-number { 
-                font-size: 20px; 
-                width: auto; height: auto; background: none; border-radius: 0;
-                margin-bottom: 10px;
-                display: block;
-            }
-            .event { font-size: 15px; padding: 12px; border-width: 3px; }
-            .add-calendar { width: 28px; height: 28px; font-size: 16px; }
-        }
-    </style>
+    }
+  </style>
 </head>
 <body>
 
-    <div class="calendar-container">
-        <div class="header">
-            <button class="nav-btn" id="prev-month">◀ 上一月</button>
-            <div class="month-year" id="calendar-title">教職員體適能瑜珈社 2026 年 3 月份行事曆</div>
-            <button class="nav-btn" id="next-month">下一月 ▶</button>
-        </div>
-        
-        <div class="calendar-grid" id="calendar-grid"></div>
+  <div class="container">
+    <div class="card">
+      <h2 style="color: #B8A86F; margin-top: 0;">✨ 教職員體適能瑜珈社課程行事曆</h2>
+      <div id="calendar"></div>
     </div>
+  </div>
 
-    <script>
-        // 您的課程資料 (資料保持不變)
-        const courseData = [           
-            { date: "2026-02-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-02-26", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-03-02", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-03-05", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-03-09", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-03-12", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-03-16", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-03-19", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-03-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-03-26", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-03-30", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-04-02", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-04-06", start: "17:15", end: "18:05", name: "瑜珈課清明節補假", location: "清明節補假" },
-            { date: "2026-04-08", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-04-09", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-04-13", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-04-16", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-04-20", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-04-23", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-04-27", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-04-30", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-05-04", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-05-07", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-05-11", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-05-14", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-05-18", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-05-21", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-05-25", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-05-28", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-06-01", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-06-04", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-06-08", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-06-11", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-06-15", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-06-18", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-06-22", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" },
-            { date: "2026-06-25", start: "17:15", end: "18:05", name: "教職員體適能瑜珈社", location: "育美館韻律教室" }
-        ];
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 👑 請記得將這裡替換為您的 CSV 發布網址
+      const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTGSqwpU_lDVel9ud2cApshe49sPgz3pWRI0tst0nVZ2lO-dHzkIFhf1mUzgbvEmRw1bzmKQb9rzWkh/pub?gid=0&single=true&output=csv';
 
-        const weekDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-        const gridContainer = document.getElementById('calendar-grid');
-        const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
-        
-        const today = new Date();
-        const year = today.getFullYear();      // 2026
-        const month = today.getMonth();         // 2 (0-11，所以 3 月是 2)
-        let currentMonth = new Date(year, month); // 預設 2026 年 3 月
-        console.log(currentMonth);
-        function renderCalendar() {
-            gridContainer.innerHTML = '';
-
-            const year = currentMonth.getFullYear();
-            const month = currentMonth.getMonth();
-            //console.log(year, month);
-            // 更新標題
-            document.getElementById('calendar-title').textContent = `教職員體適能瑜珈社 ${year} 年 ${monthNames[month]}份行事曆`;
-
-            // 產生標題列
-            weekDays.forEach(day => {
-                const header = document.createElement('div');
-                header.className = 'day-header';
-                header.textContent = day;
-                gridContainer.appendChild(header);
-            });
-
-            // 計算起始日期
-            const firstDay = new Date(year, month, 1);
-            const startDate = new Date(firstDay);
-            startDate.setDate(startDate.getDate() - firstDay.getDay());
-
-            let currentDate = new Date(startDate);
-            const totalDays = 35; // 顯示 5 週
-
-            for (let i = 0; i < totalDays; i++) {
-                const dateYear = currentDate.getFullYear();
-                const dateMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-                const dateDay = String(currentDate.getDate()).padStart(2, '0');
-                const dateStr = `${dateYear}-${dateMonth}-${dateDay}`;
-                const dayOfWeek = weekDays[currentDate.getDay()];
-
-                const cell = document.createElement('div');
-                cell.className = 'day-cell';
-                cell.setAttribute('data-day', dayOfWeek);
-
-                const numDiv = document.createElement('div');
-                numDiv.className = 'day-number';
-                numDiv.textContent = currentDate.getDate();
-                cell.appendChild(numDiv);
-
-                const event = courseData.find(c => c.date === dateStr);
-
-                if (event) {
-                    cell.classList.add('has-event');
-
-                    // Google 按鈕移到這裡，讓它跟在日期後面
-                    const gLink = document.createElement('a');
-                    gLink.className = 'add-calendar';
-                    gLink.target = '_blank';
-                    gLink.textContent = '＋'; 
-                    gLink.href = generateGoogleLink(event, event.location);
-                    numDiv.appendChild(gLink); // 將按鈕加入到數字圓圈旁
-
-                    const eventInfo = document.createElement('div');
-                    eventInfo.className = 'event';
-                    if (event.location !== "育美館韻律教室") {
-                        eventInfo.classList.add('event-red');
-                    }
-                    // 這裡移除按鈕，只保留文字
-                    eventInfo.innerHTML = `${event.start}–${event.end}<br>${event.location}`;
-                    cell.appendChild(eventInfo);
-                }
-
-                gridContainer.appendChild(cell);
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-        }
-
-        function generateGoogleLink(event, location) {
-            function toTC(dateStr, timeStr) {
-                const dt = new Date(`${dateStr}T${timeStr}:00+08:00`); 
-                return dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      Papa.parse(csvUrl, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          const eventsData = results.data.map(row => {
+            const dateParts = row.date.split('/');
+            const formattedDate = `${dateParts[0]}-${dateParts[1].padStart(2, '0')}-${dateParts[2].padStart(2, '0')}`;
+            
+            // 根據班級名稱設定對應的底色
+            let eventColor = '#E0E0E0'; 
+            if (row.name.includes('週一') ) {
+              eventColor = '#FCE8B2'; 
+            } else if (row.name.includes('調課')) {
+              eventColor = '#FAD2CF'; 
+            } else if (row.name.includes('週四')) {
+              eventColor = '#CEEAD6'; 
+            } else if (row.name.includes('週五')) {
+              eventColor = '#D0E1F9'; 
+            } else if (row.name.includes('週六')) {
+              eventColor = '#FDE2E4'; 
+            } else if (row.name.includes('週日')) {
+              eventColor = '#EAD7FF'; 
             }
 
-            const startUTC = toTC(event.date, event.start);
-            const endUTC = toTC(event.date, event.end);
+            return {
+              title: `${row.name}`, // 標題目前只放課程名稱
+              start: `${formattedDate}T${row.start}:00`,
+              end: `${formattedDate}T${row.end}:00`,
+              backgroundColor: eventColor,
+              display: 'block' 
+            };
+          });
+
+
+          const calendarEl = document.getElementById('calendar');
+          const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: window.innerWidth < 768 ? 'listMonth' : 'dayGridMonth',
             
-            const baseUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE";
-            const text = `&text=${encodeURIComponent(event.name)}`;
-            const dates = `&dates=${startUTC}/${endUTC}`;
-            const loc = `&location=${encodeURIComponent(location)}`;
+            // 👑 關鍵修改：如果是手機螢幕，整個行事曆高度強制設定為 650px；電腦版則維持預設的 'auto'
+            // (您可以把 650 改成 700 或 800，找出您覺得最舒服的視覺長度)
+            height: window.innerWidth < 768 ? 650 : 'auto',
             
-            return baseUrl + text + dates + loc;
+            locale: 'zh-tw',
+            headerToolbar: {
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,listMonth'
+            },
+            events: eventsData,
+            // 👑 關鍵修改：針對不同模式個別控管時間的顯示
+            views: {
+              dayGridMonth: {
+                displayEventTime: false // 當切換到「月曆」時，隱藏時間
+              },
+              listMonth: {
+                displayEventTime: true  // 當切換到「列表」時，顯示時間
+              }
+            },
+            eventTimeFormat: { 
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false 
+            },
+            // 動態監聽：確保學員翻轉手機螢幕時，高度與排版也會無縫切換
+            windowResize: function(arg) {
+              if (window.innerWidth < 768) {
+                calendar.changeView('listMonth');
+                calendar.setOption('height', 650); // 切換回手機版高度                
+              } else {
+                calendar.changeView('dayGridMonth');
+                calendar.setOption('height', 'auto'); // 切換回電腦版高度
+              }
+            }
+          });
+
+          calendar.render();
         }
+      });
+    });
+  </script>
 
-        // 按鈕事件
-        document.getElementById('prev-month').addEventListener('click', () => {
-            currentMonth.setMonth(currentMonth.getMonth() - 1);
-            renderCalendar();
-        });
-
-        document.getElementById('next-month').addEventListener('click', () => {
-            currentMonth.setMonth(currentMonth.getMonth() + 1);
-            renderCalendar();
-        });
-
-        // 初始化
-        renderCalendar();
-    </script>
 </body>
 </html>
